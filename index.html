@@ -74,7 +74,10 @@ p { color: #c9d4e7; }
   margin: 12px 0;
 }
 
-.card span { color: #b7c8dd; }
+.card span { 
+  color: #b7c8dd; 
+  display: block;
+}
 
 button {
   font: inherit;
@@ -90,14 +93,18 @@ button {
   cursor: pointer;
 }
 
-.btn:hover { filter: brightness(1.1); }
+.btn:hover { 
+  filter: brightness(1.1); 
+}
 
 .secondary {
   background: #31445f;
   color: white;
 }
 
-.hidden { display: none !important; }
+.hidden { 
+  display: none !important; 
+}
 
 .topline {
   display: flex;
@@ -121,7 +128,9 @@ button {
   border-radius: 10px;
 }
 
-.stat b { color: #ffd77a; }
+.stat b { 
+  color: #ffd77a; 
+}
 
 .options {
   display: grid;
@@ -209,10 +218,21 @@ label {
   border-radius: 99px;
 }
 
+/* PIE DE PÁGINA PERSONALIZADO */
+
 footer {
   text-align: center;
-  padding: 25px;
-  color: #a8bad2;
+  padding: 30px 15px;
+  background: #0b1220;
+  border-top: 2px solid #ffd77a;
+  margin-top: 35px;
+}
+
+footer .autores {
+  color: #ffd77a;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 12px;
 }
 </style>
 </head>
@@ -290,7 +310,7 @@ footer {
   </div>
 </section>
 
-<!-- JUEGO -->
+<!-- PANTALLA DEL JUEGO -->
 
 <section id="game" class="hidden">
 
@@ -338,7 +358,7 @@ footer {
   </div>
 </section>
 
-<!-- RESULTADOS -->
+<!-- PANTALLA DE RESULTADOS -->
 
 <section id="finish" class="hidden">
   <div class="panel" style="text-align:center">
@@ -353,17 +373,18 @@ footer {
 
 </main>
 
+<!-- NOMBRES DE LOS CREADORES -->
+
 <footer>
-  El Reino de las Palabras · Lengua 1.º ESO
+  <p>El Reino de las Palabras · Lengua 1.º ESO</p>
+  <p class="autores">
+    ✨ Hecho por Gonzalo e Irene · 1.º ESO C ✨
+  </p>
 </footer>
 
 <script>
 
 // BANCO DE PREGUNTAS
-// Estructura:
-// [tema, pregunta, opciones, respuestaCorrecta, explicación]
-// La respuestaCorrecta indica el índice de la opción,
-// empezando por 0.
 
 const QUESTIONS = [
 
@@ -668,7 +689,7 @@ const QUESTIONS = [
 
 ];
 
-// DATOS DE LAS TRES CLASES
+// GUARDAR PUNTUACIONES
 
 const KEY = "reino-palabras-1eso-v1";
 
@@ -683,6 +704,7 @@ function initialData() {
 function load() {
   try {
     const stored = JSON.parse(localStorage.getItem(KEY));
+
     if (
       stored &&
       ["A", "B", "C"].every(c =>
@@ -712,7 +734,7 @@ function save() {
   }
 }
 
-// NAVEGACIÓN
+// PANTALLAS
 
 function show(id) {
   ["home", "dashboard", "game", "finish"].forEach(name => {
@@ -792,17 +814,19 @@ function showDashboard() {
     .forEach(([c, value], i) => {
       const row = document.createElement("div");
       row.className = "rank";
+
       row.textContent =
         ["🥇", "🥈", "🥉"][i] +
         " 1.º ESO " + c +
         " — " + value.xp + " puntos";
+
       ranking.appendChild(row);
     });
 
   show("dashboard");
 }
 
-// MEZCLAR RESPUESTAS Y PREGUNTAS
+// MEZCLAR RESPUESTAS
 
 function shuffle(array) {
   const result = [...array];
@@ -816,7 +840,7 @@ function shuffle(array) {
   return result;
 }
 
-// COMENZAR UNA MISIÓN
+// INICIAR MISIÓN
 
 function startGame() {
   const topic = document.getElementById("topic").value;
@@ -889,7 +913,7 @@ function renderQuestion() {
   });
 }
 
-// CORREGIR RESPUESTA
+// COMPROBAR RESPUESTA
 
 function answer(button, correct, explanation) {
   if (answered) return;
@@ -955,7 +979,7 @@ function nextQuestion() {
   }
 }
 
-// TERMINAR MISIÓN Y SUMAR PUNTOS
+// RESULTADOS
 
 function finish() {
   data[current].xp += score;
@@ -978,7 +1002,7 @@ function finish() {
   show("finish");
 }
 
-// SALIR DE UNA MISIÓN
+// SALIR
 
 function leaveGame() {
   if (confirm("¿Salir? Perderás los puntos de esta misión.")) {
@@ -986,7 +1010,7 @@ function leaveGame() {
   }
 }
 
-// INICIAR LA WEB
+// INICIAR WEB
 
 renderClasses();
 
