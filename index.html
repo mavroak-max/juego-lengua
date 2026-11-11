@@ -1,0 +1,995 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>El Reino de las Palabras | 1.º ESO</title>
+
+<style>
+:root {
+  font-family: Arial, sans-serif;
+  color: #f6f2e9;
+  background: #101827;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #263b63, #101827 70%);
+  min-height: 100vh;
+}
+
+main {
+  max-width: 1050px;
+  margin: auto;
+  padding: 28px 18px;
+}
+
+header {
+  text-align: center;
+  margin: 20px 0 30px;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  color: #ffd77a;
+}
+
+h2 { margin-top: 0; }
+
+p { color: #c9d4e7; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.card, .panel {
+  background: #1c2940;
+  border: 1px solid #41516d;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 12px 30px #0004;
+}
+
+.card {
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: gold;
+}
+
+.card strong {
+  display: block;
+  font-size: 1.6rem;
+  margin: 12px 0;
+}
+
+.card span { color: #b7c8dd; }
+
+button {
+  font: inherit;
+}
+
+.btn {
+  background: #f7c963;
+  color: #1b2433;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn:hover { filter: brightness(1.1); }
+
+.secondary {
+  background: #31445f;
+  color: white;
+}
+
+.hidden { display: none !important; }
+
+.topline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+
+.stat {
+  background: #2b3c56;
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+.stat b { color: #ffd77a; }
+
+.options {
+  display: grid;
+  gap: 10px;
+  margin: 22px 0;
+}
+
+.option {
+  width: 100%;
+  padding: 16px;
+  border: 1px solid #61718c;
+  background: #273954;
+  color: white;
+  border-radius: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.option:hover:not(:disabled) {
+  background: #395374;
+}
+
+.correct {
+  background: #1c674b !important;
+  border-color: #78e3ac;
+}
+
+.wrong {
+  background: #7e3544 !important;
+  border-color: #ffb2b9;
+}
+
+.feedback {
+  min-height: 70px;
+  padding: 12px;
+  border-radius: 10px;
+  background: #142237;
+  margin: 12px 0;
+  line-height: 1.5;
+}
+
+.progress {
+  height: 10px;
+  background: #3a4961;
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.bar {
+  height: 100%;
+  background: #f7c963;
+  transition: width 0.25s;
+}
+
+.rank {
+  padding: 12px 0;
+  border-bottom: 1px solid #394b66;
+}
+
+select {
+  padding: 12px;
+  background: #283a54;
+  color: white;
+  border: 1px solid #6d7d95;
+  border-radius: 9px;
+  max-width: 100%;
+}
+
+label {
+  display: block;
+  margin: 12px 0;
+}
+
+.tag {
+  color: #7dd3fc;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.pill {
+  background: #394a66;
+  color: #f7d77e;
+  padding: 8px 12px;
+  border-radius: 99px;
+}
+
+footer {
+  text-align: center;
+  padding: 25px;
+  color: #a8bad2;
+}
+</style>
+</head>
+
+<body>
+
+<main>
+
+<header>
+  <div class="tag">
+    Lengua Castellana y Literatura · 1.º ESO
+  </div>
+  <h1>⚔️ El Reino de las Palabras</h1>
+  <p>
+    Supera misiones, conquista conocimientos
+    y asciende en la clasificación.
+  </p>
+</header>
+
+<!-- PANTALLA PRINCIPAL -->
+
+<section id="home">
+  <h2>Elige tu reino</h2>
+  <div class="grid" id="classes"></div>
+  <p>
+    Cada clase tiene su propio progreso.
+  </p>
+</section>
+
+<!-- PANTALLA DE CADA CLASE -->
+
+<section id="dashboard" class="hidden">
+
+  <div class="topline">
+    <button class="btn secondary" onclick="goHome()">
+      ← Cambiar clase
+    </button>
+    <span class="pill" id="classTitle"></span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="grid">
+
+    <div class="panel">
+      <h2>📜 Misiones</h2>
+      <p>
+        Elige una materia y responde
+        diez preguntas aleatorias.
+      </p>
+
+      <label for="topic">Selecciona la misión:</label>
+
+      <select id="topic">
+        <option value="mix">Gran desafío mixto</option>
+        <option value="morf">Morfología</option>
+        <option value="sint">Sintaxis</option>
+      </select>
+
+      <p>
+        <button class="btn" onclick="startGame()">
+          Comenzar misión →
+        </button>
+      </p>
+    </div>
+
+    <div class="panel">
+      <h2>🏆 Clasificación</h2>
+      <div id="ranking"></div>
+      <p>
+        Puntuación acumulada de las tres clases.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+<!-- JUEGO -->
+
+<section id="game" class="hidden">
+
+  <div class="topline">
+    <button class="btn secondary" onclick="leaveGame()">
+      ← Salir
+    </button>
+    <span class="pill" id="missionName"></span>
+  </div>
+
+  <div class="panel">
+
+    <div class="stats">
+      <span class="stat">
+        Pregunta <b id="counter"></b>
+      </span>
+      <span class="stat">
+        Puntos: <b id="roundScore">0</b>
+      </span>
+      <span class="stat">
+        Racha: <b id="streak">0</b>
+      </span>
+    </div>
+
+    <div class="progress">
+      <div class="bar" id="bar"></div>
+    </div>
+
+    <p class="tag" id="questionTopic"></p>
+    <h2 id="question"></h2>
+
+    <div id="options" class="options"></div>
+
+    <div class="feedback" id="feedback">
+      Selecciona una respuesta.
+    </div>
+
+    <button
+      class="btn hidden"
+      id="next"
+      onclick="nextQuestion()">
+      Siguiente →
+    </button>
+
+  </div>
+</section>
+
+<!-- RESULTADOS -->
+
+<section id="finish" class="hidden">
+  <div class="panel" style="text-align:center">
+    <h1>🏰 ¡Misión completada!</h1>
+    <h2 id="result"></h2>
+    <p id="resultText"></p>
+    <button class="btn" onclick="showDashboard()">
+      Volver a mi reino
+    </button>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  El Reino de las Palabras · Lengua 1.º ESO
+</footer>
+
+<script>
+
+// BANCO DE PREGUNTAS
+// Estructura:
+// [tema, pregunta, opciones, respuestaCorrecta, explicación]
+// La respuestaCorrecta indica el índice de la opción,
+// empezando por 0.
+
+const QUESTIONS = [
+
+  // MORFOLOGÍA
+
+  [
+    "morf",
+    "¿Qué clase de palabra es «rápidamente»?",
+    ["Adverbio", "Adjetivo", "Sustantivo", "Verbo"],
+    0,
+    "Es un adverbio de modo. Muchos terminan en -mente."
+  ],
+
+  [
+    "morf",
+    "En «las montañas altas», ¿cuál es el adjetivo?",
+    ["montañas", "las", "altas", "ninguna"],
+    2,
+    "«Altas» expresa una cualidad de las montañas."
+  ],
+
+  [
+    "morf",
+    "¿Cuál es un sustantivo abstracto?",
+    ["alegría", "mesa", "árbol", "lápiz"],
+    0,
+    "«Alegría» nombra una emoción."
+  ],
+
+  [
+    "morf",
+    "En «aquellos libros», «aquellos» es...",
+    [
+      "Determinante demostrativo",
+      "Verbo",
+      "Adverbio",
+      "Preposición"
+    ],
+    0,
+    "Acompaña al sustantivo y señala distancia."
+  ],
+
+  [
+    "morf",
+    "¿Cuál es un pronombre personal?",
+    ["nosotros", "nuestro", "algunos libros", "rojo"],
+    0,
+    "«Nosotros» es un pronombre personal."
+  ],
+
+  [
+    "morf",
+    "¿Qué verbo está en pretérito imperfecto?",
+    ["cantaba", "cantaré", "he cantado", "canté"],
+    0,
+    "«Cantaba» está en pretérito imperfecto de indicativo."
+  ],
+
+  [
+    "morf",
+    "¿Cuál es el infinitivo de «escribieron»?",
+    ["escribir", "escrito", "escribiendo", "escribo"],
+    0,
+    "El infinitivo es «escribir»."
+  ],
+
+  [
+    "morf",
+    "En «muy pequeño», «muy» es...",
+    ["Adverbio", "Sustantivo", "Verbo", "Artículo"],
+    0,
+    "«Muy» modifica la intensidad del adjetivo."
+  ],
+
+  [
+    "morf",
+    "¿Cuál de estas palabras es una preposición?",
+    ["desde", "aunque", "porque", "pero"],
+    0,
+    "«Desde» es una preposición."
+  ],
+
+  [
+    "morf",
+    "En «el perro corre», ¿cuál es el verbo?",
+    ["corre", "perro", "el", "ninguno"],
+    0,
+    "«Corre» es el verbo de la oración."
+  ],
+
+  [
+    "morf",
+    "¿Cuál es una conjunción?",
+    ["y", "sobre", "feliz", "ellos"],
+    0,
+    "«Y» es una conjunción copulativa."
+  ],
+
+  [
+    "morf",
+    "En «mis amigos», «mis» es...",
+    [
+      "Determinante posesivo",
+      "Pronombre personal",
+      "Verbo",
+      "Adverbio"
+    ],
+    0,
+    "Indica posesión y acompaña al sustantivo."
+  ],
+
+  [
+    "morf",
+    "¿Cuál es un nombre propio?",
+    ["Madrid", "ciudad", "río", "escuela"],
+    0,
+    "«Madrid» es un nombre propio."
+  ],
+
+  [
+    "morf",
+    "¿Qué tiempo verbal es «habíamos llegado»?",
+    [
+      "Pretérito pluscuamperfecto",
+      "Pretérito perfecto simple",
+      "Futuro simple",
+      "Presente"
+    ],
+    0,
+    "Se forma con haber en imperfecto y un participio."
+  ],
+
+  [
+    "morf",
+    "En «tres gatos», «tres» es...",
+    [
+      "Determinante numeral cardinal",
+      "Adverbio",
+      "Verbo",
+      "Pronombre personal"
+    ],
+    0,
+    "Indica una cantidad exacta."
+  ],
+
+  // SINTAXIS
+
+  [
+    "sint",
+    "En «La niña lee un cuento», ¿cuál es el sujeto?",
+    ["La niña", "lee un cuento", "un cuento", "lee"],
+    0,
+    "«La niña» concuerda con el verbo."
+  ],
+
+  [
+    "sint",
+    "En «Los pájaros cantan», ¿cuál es el predicado?",
+    ["cantan", "Los pájaros", "pájaros", "Los"],
+    0,
+    "El predicado contiene el verbo «cantan»."
+  ],
+
+  [
+    "sint",
+    "¿Cuál es el núcleo de «una casa antigua»?",
+    ["casa", "una", "antigua", "una casa"],
+    0,
+    "El núcleo del sintagma nominal es «casa»."
+  ],
+
+  [
+    "sint",
+    "¿Cuál es el núcleo del predicado en «Ana dibuja flores»?",
+    ["dibuja", "Ana", "flores", "Ana dibuja"],
+    0,
+    "El verbo es el núcleo del predicado."
+  ],
+
+  [
+    "sint",
+    "En «Mis primos llegaron ayer», ¿cuál es el sujeto?",
+    ["Mis primos", "llegaron ayer", "ayer", "llegaron"],
+    0,
+    "«Mis primos» concuerda con «llegaron»."
+  ],
+
+  [
+    "sint",
+    "¿Cuál es un sintagma preposicional?",
+    [
+      "con mi hermana",
+      "muy feliz",
+      "los niños",
+      "corre deprisa"
+    ],
+    0,
+    "Comienza por la preposición «con»."
+  ],
+
+  [
+    "sint",
+    "En «El gato negro duerme», ¿cuál es el núcleo del sujeto?",
+    ["gato", "negro", "El", "duerme"],
+    0,
+    "«Gato» es el núcleo del sujeto."
+  ],
+
+  [
+    "sint",
+    "En «Mañana iremos al parque», el sujeto está...",
+    [
+      "Omitido: nosotros",
+      "Expreso: mañana",
+      "Expreso: parque",
+      "No existe: es impersonal"
+    ],
+    0,
+    "La forma verbal permite recuperar «nosotros»."
+  ],
+
+  [
+    "sint",
+    "En «Las flores rojas crecieron», el sujeto es...",
+    [
+      "Las flores rojas",
+      "crecieron",
+      "rojas crecieron",
+      "flores rojas crecieron"
+    ],
+    0,
+    "Todo el sintagma nominal funciona como sujeto."
+  ],
+
+  [
+    "sint",
+    "En «Mi hermano es simpático», ¿cuál es el verbo?",
+    ["es", "hermano", "simpático", "Mi"],
+    0,
+    "«Es» es una forma del verbo ser."
+  ],
+
+  [
+    "sint",
+    "¿Cuál es un sintagma adjetival?",
+    [
+      "muy contenta",
+      "la ventana",
+      "por la calle",
+      "bastante lejos"
+    ],
+    0,
+    "Su núcleo es el adjetivo «contenta»."
+  ],
+
+  [
+    "sint",
+    "En «Ayer llovió mucho», la oración es...",
+    [
+      "Impersonal",
+      "Con sujeto omitido yo",
+      "Con sujeto ayer",
+      "Con sujeto mucho"
+    ],
+    0,
+    "El verbo meteorológico «llover» es impersonal."
+  ],
+
+  [
+    "sint",
+    "En «Los alumnos estudian en casa», el núcleo del predicado es...",
+    ["estudian", "alumnos", "casa", "Los"],
+    0,
+    "«Estudian» es el verbo y núcleo del predicado."
+  ],
+
+  [
+    "sint",
+    "¿Cuál es un sintagma adverbial?",
+    [
+      "muy lejos",
+      "una ciudad",
+      "de madera",
+      "bastante alto"
+    ],
+    0,
+    "«Lejos» es el núcleo adverbial."
+  ],
+
+  [
+    "sint",
+    "En «Llegaron los invitados», ¿cuál es el sujeto?",
+    [
+      "los invitados",
+      "Llegaron",
+      "Sujeto omitido ellos",
+      "No hay sujeto"
+    ],
+    0,
+    "«Los invitados» es un sujeto colocado después del verbo."
+  ]
+
+];
+
+// DATOS DE LAS TRES CLASES
+
+const KEY = "reino-palabras-1eso-v1";
+
+function initialData() {
+  return {
+    A: { xp: 0, wins: 0 },
+    B: { xp: 0, wins: 0 },
+    C: { xp: 0, wins: 0 }
+  };
+}
+
+function load() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(KEY));
+    if (
+      stored &&
+      ["A", "B", "C"].every(c =>
+        stored[c] &&
+        Number.isFinite(stored[c].xp) &&
+        Number.isFinite(stored[c].wins)
+      )
+    ) return stored;
+  } catch (e) {}
+
+  return initialData();
+}
+
+let data = load();
+let current = null;
+let round = [];
+let index = 0;
+let score = 0;
+let streak = 0;
+let answered = false;
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(data));
+  } catch (e) {
+    console.warn("No se pudo guardar el progreso.");
+  }
+}
+
+// NAVEGACIÓN
+
+function show(id) {
+  ["home", "dashboard", "game", "finish"].forEach(name => {
+    document.getElementById(name).classList.toggle(
+      "hidden", name !== id
+    );
+  });
+}
+
+function goHome() {
+  current = null;
+  renderClasses();
+  show("home");
+}
+
+function renderClasses() {
+  const container = document.getElementById("classes");
+  container.innerHTML = "";
+
+  ["A", "B", "C"].forEach(c => {
+    const button = document.createElement("button");
+    button.className = "card";
+
+    const heading = document.createElement("strong");
+    heading.textContent = "1.º ESO " + c;
+
+    const icon = document.createElement("span");
+    icon.textContent = "🏰 REINO " + c;
+
+    const progress = document.createElement("span");
+    progress.textContent =
+      "⭐ " + data[c].xp + " puntos · " +
+      data[c].wins + " misiones";
+
+    button.append(icon, heading, progress);
+    button.onclick = () => choose(c);
+    container.appendChild(button);
+  });
+}
+
+function choose(c) {
+  current = c;
+  showDashboard();
+}
+
+function showDashboard() {
+  if (!current) {
+    goHome();
+    return;
+  }
+
+  document.getElementById("classTitle").textContent =
+    "1.º ESO " + current;
+
+  const d = data[current];
+  const level = Math.floor(d.xp / 200) + 1;
+
+  const stats = document.getElementById("stats");
+  stats.innerHTML = "";
+
+  [
+    "⭐ Puntos: " + d.xp,
+    "🛡️ Nivel: " + level,
+    "📜 Misiones: " + d.wins
+  ].forEach(value => {
+    const span = document.createElement("span");
+    span.className = "stat";
+    span.textContent = value;
+    stats.appendChild(span);
+  });
+
+  const ranking = document.getElementById("ranking");
+  ranking.innerHTML = "";
+
+  Object.entries(data)
+    .sort((a, b) => b[1].xp - a[1].xp)
+    .forEach(([c, value], i) => {
+      const row = document.createElement("div");
+      row.className = "rank";
+      row.textContent =
+        ["🥇", "🥈", "🥉"][i] +
+        " 1.º ESO " + c +
+        " — " + value.xp + " puntos";
+      ranking.appendChild(row);
+    });
+
+  show("dashboard");
+}
+
+// MEZCLAR RESPUESTAS Y PREGUNTAS
+
+function shuffle(array) {
+  const result = [...array];
+
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+
+  return result;
+}
+
+// COMENZAR UNA MISIÓN
+
+function startGame() {
+  const topic = document.getElementById("topic").value;
+
+  round = shuffle(
+    QUESTIONS.filter(q => topic === "mix" || q[0] === topic)
+  ).slice(0, 10);
+
+  index = 0;
+  score = 0;
+  streak = 0;
+
+  document.getElementById("missionName").textContent =
+    topic === "mix" ? "Gran desafío" :
+    topic === "morf" ? "Morfología" : "Sintaxis";
+
+  show("game");
+  renderQuestion();
+}
+
+// MOSTRAR PREGUNTA
+
+function renderQuestion() {
+  answered = false;
+
+  const q = round[index];
+
+  document.getElementById("counter").textContent =
+    (index + 1) + "/" + round.length;
+
+  document.getElementById("roundScore").textContent = score;
+  document.getElementById("streak").textContent = streak;
+
+  document.getElementById("bar").style.width =
+    (index / round.length * 100) + "%";
+
+  document.getElementById("questionTopic").textContent =
+    q[0] === "morf" ? "Morfología" : "Sintaxis";
+
+  document.getElementById("question").textContent = q[1];
+
+  document.getElementById("feedback").textContent =
+    "Selecciona una respuesta.";
+
+  document.getElementById("next").classList.add("hidden");
+
+  const options = shuffle(
+    q[2].map((value, i) => ({
+      value: value,
+      correct: i === q[3]
+    }))
+  );
+
+  const container = document.getElementById("options");
+  container.innerHTML = "";
+
+  options.forEach(option => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option.value;
+    button.dataset.correct = String(option.correct);
+
+    button.onclick = () => answer(
+      button,
+      option.correct,
+      q[4]
+    );
+
+    container.appendChild(button);
+  });
+}
+
+// CORREGIR RESPUESTA
+
+function answer(button, correct, explanation) {
+  if (answered) return;
+
+  answered = true;
+
+  const buttons = [...document.querySelectorAll(".option")];
+
+  buttons.forEach(b => {
+    b.disabled = true;
+
+    if (b.dataset.correct === "true") {
+      b.classList.add("correct");
+    }
+  });
+
+  const feedback = document.getElementById("feedback");
+
+  if (correct) {
+    streak++;
+
+    let earned = 10;
+
+    if (streak >= 3) {
+      earned += 5;
+    }
+
+    score += earned;
+
+    feedback.textContent =
+      "✅ ¡Correcto! +" + earned +
+      " puntos. " + explanation;
+
+  } else {
+    streak = 0;
+    button.classList.add("wrong");
+
+    feedback.textContent =
+      "❌ Respuesta incorrecta. " + explanation;
+  }
+
+  document.getElementById("roundScore").textContent = score;
+  document.getElementById("streak").textContent = streak;
+
+  const next = document.getElementById("next");
+
+  next.textContent =
+    index === round.length - 1
+      ? "Ver resultados 🏆"
+      : "Siguiente →";
+
+  next.classList.remove("hidden");
+}
+
+// SIGUIENTE PREGUNTA
+
+function nextQuestion() {
+  if (index < round.length - 1) {
+    index++;
+    renderQuestion();
+  } else {
+    finish();
+  }
+}
+
+// TERMINAR MISIÓN Y SUMAR PUNTOS
+
+function finish() {
+  data[current].xp += score;
+  data[current].wins++;
+
+  save();
+
+  document.getElementById("result").textContent =
+    "⭐ " + score + " puntos";
+
+  const message =
+    score >= 100
+      ? "¡Excelente! Has dominado esta misión."
+      : score >= 60
+      ? "¡Buen trabajo! Sigue practicando."
+      : "¡Cada misión te hace mejorar!";
+
+  document.getElementById("resultText").textContent = message;
+
+  show("finish");
+}
+
+// SALIR DE UNA MISIÓN
+
+function leaveGame() {
+  if (confirm("¿Salir? Perderás los puntos de esta misión.")) {
+    showDashboard();
+  }
+}
+
+// INICIAR LA WEB
+
+renderClasses();
+
+</script>
+</body>
+</html>
